@@ -33,8 +33,8 @@ import re
 
 class DLCalls:
     def __init__(self):
+        # regex for Klasse A calls
         self.acalls = "D([CDGHJ][0-9]|[BFKLM][1-9])[A-Z]{2,3}"
-        self.nonsuffix = ["SOS", "XXX", "TTT", "YYY", "DDD", "JJJ", "MAYDAY", "PAN", self.nonqgroup()]
         pdfgrepcall = "/usr/local/bin/pdfgrep -o \""+self.acalls+"\" Rufzeichenliste_AFU.pdf"
         args = shlex.split(pdfgrepcall)
         proc = subprocess.Popen(args, stdout=subprocess.PIPE, shell=False)
@@ -44,12 +44,16 @@ class DLCalls:
         print self.dlcalls
     def nonqgroup(self):
         q = []
+        # no Q-Groups from QOA-QUZ allowed as suffix
         for a in string.uppercase[14:21]:
             for b in string.ascii_uppercase:
                 q.append("Q"+a+b)
         return q
     def freecalls(self):
         pattern = re.compile(self.acalls)
+        # these suffixes are not allowed
+        nonsuffix = ["SOS", "XXX", "TTT", "YYY", "DDD", "JJJ", "MAYDAY", "PAN"] + self.nonqgroup()
+        print nonsuffix
         f = open('freecalls.txt', 'w')
         for prefix in ['DB', 'DC', 'DD', 'DF', 'DG', 'DH', 'DJ', 'DK', 'DL', 'DM']:
             for number in range(10):
@@ -61,8 +65,8 @@ class DLCalls:
                                 f.write("%s\n" % call)
                         for charlie in string.ascii_uppercase:
                             suffix = alpha+bravo+charlie
-                            if suffix in self.nonsuffix:
-                                next
+                            if suffix in nonsuffix:
+                                continue
                             call = prefix+str(number)+suffix
                             if pattern.match(call):
                                 if call not in self.dlcalls:
@@ -72,7 +76,6 @@ class DLCalls:
 
 if __name__ == "__main__":
     c = DLCalls()
-    c.out()
     c.freecalls()
 
 
