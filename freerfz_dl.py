@@ -31,6 +31,7 @@ import shlex
 import string
 import re
 import urllib2
+from distutils.spawn import find_executable
 
 class DLCalls:
     def __init__(self):
@@ -40,14 +41,7 @@ class DLCalls:
         self.pdffile = 'Rufzeichenliste_AFU.pdf'
         self.outfile = 'freecalls.txt'
         self.download_Rufzeichenliste()
-        pdfgrepcall = "/usr/local/bin/pdfgrep -o \""+self.ecalls+"\" "+self.pdffile
-        try:
-            proc = subprocess.Popen(shlex.split(pdfgrepcall), stdout=subprocess.PIPE, shell=False)
-            (out, err) = proc.communicate()
-        except subprocess.CalledProcessError as e:
-            print "Error bei pdfgrep. Beende Programm."
-            print e.output
-        self.dlcalls = out.split()
+        self.dlcalls = self.generiere_Rufzeichenliste()
 
     def out(self):
         print self.dlcalls
@@ -70,7 +64,7 @@ class DLCalls:
             dl = True
 
         if dl:
-            print "Lade neues PDF runter"
+            print "Lade neues PDF runter."
             try:
                 with open(self.pdffile, 'wb') as f:
                     f.write(r.read())
@@ -80,6 +74,21 @@ class DLCalls:
             print "Rufzeichenliste braucht nicht erneut runter geladen zu werden."
         r.close()
         return
+
+    def generiere_Rufzeichenliste(self):
+        print "Lese Rufzeichen aus der Rufzeichenliste aus."
+        pdfgrep = find_executable("pdfgrep")
+        if pdfgrep == None:
+            print "Bitte installiere 'pdfgrep'."
+            sys.exit(1)
+        pdfgrepcall = pdfgrep +" -o \""+self.ecalls+"\" "+self.pdffile
+        try:
+            proc = subprocess.Popen(shlex.split(pdfgrepcall), stdout=subprocess.PIPE, shell=False)
+            (out, err) = proc.communicate()
+        except subprocess.CalledProcessError as e:
+            print "Error bei pdfgrep. Beende Programm."
+            print e.output
+        return out.split()
 
     def nonqgroup(self):
         q = []
@@ -95,7 +104,7 @@ class DLCalls:
         nonsuffix = ["SOS", "XXX", "TTT", "YYY", "DDD", "JJJ", "MAYDAY", "PAN"] + self.nonqgroup()
         f = open(self.outfile, 'w')
         #for prefix in ['DB', 'DC', 'DD', 'DF', 'DG', 'DH', 'DJ', 'DK', 'DL', 'DM']:
-        print "Generiere freie Klasse E Rufzeichen"
+        print "Generiere freie Klasse E Rufzeichen."
         for prefix in ['DO']:
             for number in range(10):
                 for alpha in string.ascii_uppercase:
@@ -113,7 +122,7 @@ class DLCalls:
                                 if call not in self.dlcalls:
                                     f.write("%s\n" % call)
         f.close()
-        print "Freie Rufzeichen liegen in der Datei '%s'." % (self.freecalls)
+        print "Freie Rufzeichen liegen in der Datei '%s'." % (self.outfile)
         return
 
 
