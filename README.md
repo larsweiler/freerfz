@@ -7,13 +7,15 @@ Zum extrahieren der vergebenen Rufzeichen wird [pdfgrep](https://pdfgrep.org) be
 
 Momentan existiert nur eine Ausgabe aller freien Klasse A Rufzeichen. Es werden die nicht zuteilbaren Suffixe laut BundesNetzAgentur [Amtsblattverfügung Vfg Nr. 12/2005 geändert durch Vfg Nr. 34/2005](https://www.bundesnetzagentur.de/SharedDocs/Downloads/DE/Sachgebiete/Telekommunikation/Unternehmen_Institutionen/Frequenzen/Amateurfunk/AmtsblattverfuegungenAFu/Vfg122005ge228ndertdurcId1833pdf.pdf?__blob=publicationFile&v=4) berücksichtigt. Weiterhin werden persönliche Rufzeichen nur noch mit zwei und drei Buchstaben-Suffix ausgegeben.
 
+Die ausgegebene Liste ist keine Gewähr darauf, dass ein Rufzeichen tatsächlich verfügbar ist. Nach Rückgabe eines Rufzeichens oder dem Tod des vorherigen Inhabers, ist ein Rufzeichen für eine gewissen Zeit gesperrt. Letzten Endes ist es Ermessenssache der BundesNetzAgentur, ob ein Rufzeichen vergeben werden kann. Die [Dienstleistungzentren Amteurfunkverwaltung](http://www.bundesnetzagentur.de/DE/Sachgebiete/Telekommunikation/Unternehmen_Institutionen/Frequenzen/SpezielleAnwendungen/Amateurfunk/amateurfunk_node.html) geben hier weitere Auskunft.
+
 Die Idee stammt aus der Liste der freien österreichischen Suffixe beim [Metalab](https://metalab.at/wiki/MetaFunk/Rufzeichen).
 
 ## Ausbau / TODO
 
 ### Code
 
-  - Rufzeichenlisten PDF runterladen
+  - ~~Rufzeichenlisten PDF runterladen~~
   - generierte Textliste der vergebenen Rufzeichen zwischenspeichern und nicht jedes Mal neu aus dem PDF generieren
   - bessere Effizienz durch Listencompare statt Iteration mit Regular Expressions
 
