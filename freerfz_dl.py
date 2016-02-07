@@ -32,6 +32,7 @@ import string
 import re
 import urllib2
 from distutils.spawn import find_executable
+from distutils.version import LooseVersion
 
 class DLCalls:
     def __init__(self):
@@ -76,12 +77,20 @@ class DLCalls:
         return
 
     def generiere_Rufzeichenliste(self):
-        print "Lese Rufzeichen aus der Rufzeichenliste aus."
         pdfgrep = find_executable("pdfgrep")
         if pdfgrep == None:
             print "Bitte installiere 'pdfgrep'."
             sys.exit(1)
+        else:
+            pdfgrepversioncall = pdfgrep + " -V"
+            proc = subprocess.Popen(shlex.split(pdfgrepversioncall), stdout=subprocess.PIPE, shell=False)
+            (out, err) = proc.communicate()
+            pdfgrepversion = re.search(r"^This is pdfgrep version\s*([\d.]+)\.", out).group(1)
+            if LooseVersion(pdfgrepversion) < LooseVersion("1.4.0"):
+                print "Bitte installiere von pdfgrep mindestens Version 1.4.0."
+                sys.exit(1)
         pdfgrepcall = pdfgrep +" -o \""+self.ecalls+"\" "+self.pdffile
+        print "Lese Rufzeichen aus der Rufzeichenliste aus."
         try:
             proc = subprocess.Popen(shlex.split(pdfgrepcall), stdout=subprocess.PIPE, shell=False)
             (out, err) = proc.communicate()
