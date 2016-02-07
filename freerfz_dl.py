@@ -87,7 +87,7 @@ class DLCalls:
             (out, err) = proc.communicate()
             pdfgrepversion = re.search(r"^This is pdfgrep version\s*([\d.]+)\.", out).group(1)
             if LooseVersion(pdfgrepversion) < LooseVersion("1.4.0"):
-                print "Bitte installiere von pdfgrep mindestens Version 1.4.0."
+                print "pdfgrep Version %s enthält die benötigten Features nicht. Bitte installiere mindestens Version 1.4.0." % (pdfgrepversion)
                 sys.exit(1)
         pdfgrepcall = pdfgrep +" -o \""+self.ecalls+"\" "+self.pdffile
         print "Lese Rufzeichen aus der Rufzeichenliste aus."
