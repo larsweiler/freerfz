@@ -85,7 +85,7 @@ class DLCalls:
             pdfgrepversioncall = pdfgrep + " -V"
             proc = subprocess.Popen(shlex.split(pdfgrepversioncall), stdout=subprocess.PIPE, shell=False)
             (out, err) = proc.communicate()
-            pdfgrepversion = re.search(r"^This is pdfgrep version\s*([\d.]+)\.", out).group(1)
+            pdfgrepversion = re.search(r"^This is pdfgrep version\s*([\d.]+)", out).group(1)
             if LooseVersion(pdfgrepversion) < LooseVersion("1.4.0"):
                 print "pdfgrep Version %s enthält die benötigten Features nicht. Bitte installiere mindestens Version 1.4.0." % (pdfgrepversion)
                 sys.exit(1)
