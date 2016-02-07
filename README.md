@@ -24,7 +24,7 @@ Die Idee stammt aus der Liste der freien österreichischen Suffixe beim [Metalab
 
 ### Regular Expressions für Rufzeichensuchen
 
-Klasse A Rufzeichen: ``D([CDGHJ][0-9]|[BFKLM][1-9])[A-Z]{2,3}``
+Klasse A Rufzeichen: ``/D([CDGHJ][0-9]|[BFKLM][1-9])[A-Z]{2,3}/``
 
 Klasse E Rufzeichen: ``/DO[1-9][A-Z]{2,3}/``
 
