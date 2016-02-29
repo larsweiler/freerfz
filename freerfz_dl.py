@@ -89,7 +89,7 @@ class DLCalls:
             if LooseVersion(pdfgrepversion) < LooseVersion("1.4.0"):
                 print "pdfgrep Version %s enthält die benötigten Features nicht. Bitte installiere mindestens Version 1.4.0." % (pdfgrepversion)
                 sys.exit(1)
-        pdfgrepcall = pdfgrep +" -o \""+self.ecalls+"\" "+self.pdffile
+        pdfgrepcall = pdfgrep +" -o \""+self.acalls+"\" "+self.pdffile
         print "Lese Rufzeichen aus der Rufzeichenliste aus."
         try:
             proc = subprocess.Popen(shlex.split(pdfgrepcall), stdout=subprocess.PIPE, shell=False)
@@ -108,28 +108,28 @@ class DLCalls:
         return q
 
     def freecalls(self):
-        pattern = re.compile(self.ecalls)
+        pattern = re.compile(self.acalls)
         # these suffixes are not allowed
         nonsuffix = ["SOS", "XXX", "TTT", "YYY", "DDD", "JJJ", "MAYDAY", "PAN"] + self.nonqgroup()
-        f = open(self.outfile, 'w')
-        #for prefix in ['DB', 'DC', 'DD', 'DF', 'DG', 'DH', 'DJ', 'DK', 'DL', 'DM']:
-        print "Generiere freie Klasse E Rufzeichen."
-        for prefix in ['DO']:
+        print "Generiere freie Klasse A Rufzeichen."
+        allcalls = []
+        for prefix in ['DB', 'DC', 'DD', 'DF', 'DG', 'DH', 'DJ', 'DK', 'DL', 'DM']:
+        #for prefix in ['DO']:
             for number in range(10):
                 for alpha in string.ascii_uppercase:
                     for bravo in string.ascii_uppercase:
                         call = prefix+str(number)+alpha+bravo
-                        if pattern.match(call):
-                            if call not in self.dlcalls:
-                                f.write("%s\n" % call)
+                        allcalls.append(call)
                         for charlie in string.ascii_uppercase:
                             suffix = alpha+bravo+charlie
                             if suffix in nonsuffix:
                                 continue
                             call = prefix+str(number)+suffix
-                            if pattern.match(call):
-                                if call not in self.dlcalls:
-                                    f.write("%s\n" % call)
+                            allcalls.append(call)
+        diff = set(allcalls) - set(self.dlcalls)
+        f = open(self.outfile, 'w')
+        for c in sorted(diff):
+            f.write("%s\n" % c)
         f.close()
         print "Freie Rufzeichen liegen in der Datei '%s'." % (self.outfile)
         return
