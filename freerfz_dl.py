@@ -31,18 +31,26 @@ import shlex
 import string
 import re
 import urllib2
+import argparse
 from distutils.spawn import find_executable
 from distutils.version import LooseVersion
 
 class DLCalls:
-    def __init__(self):
+    def __init__(self, args):
         # regex for Klasse A calls
-        self.acalls = "D([CDGHJ][0-9]|[BFKLM][1-9])[A-Z]{2,3}"
-        self.ecalls = "DO[1-9][A-Z]{2,3}"
         self.pdffile = 'Rufzeichenliste_AFU.pdf'
-        self.outfile = 'freecalls.txt'
         self.download_Rufzeichenliste()
+        self.outfile = 'freecalls_'+args.k+'.txt'
+
+        if args.k == 'a':
+            self.calls = "D([CDGHJ][0-9]|[BFKLM][1-9])[A-Z]{2,3}"
+            self.prefix = ['DB', 'DC', 'DD', 'DF', 'DG', 'DH', 'DJ', 'DK', 'DL', 'DM']
+        elif args.k == 'e':
+            self.calls = "DO[1-9][A-Z]{2,3}"
+            self.prefix = ['DO']
+
         self.dlcalls = self.generiere_Rufzeichenliste()
+
 
     def out(self):
         print self.dlcalls
@@ -89,7 +97,7 @@ class DLCalls:
             if LooseVersion(pdfgrepversion) < LooseVersion("1.4.0"):
                 print "pdfgrep Version %s enthält die benötigten Features nicht. Bitte installiere mindestens Version 1.4.0." % (pdfgrepversion)
                 sys.exit(1)
-        pdfgrepcall = pdfgrep +" -o \""+self.acalls+"\" "+self.pdffile
+        pdfgrepcall = pdfgrep +" -o \""+self.calls+"\" "+self.pdffile
         print "Lese Rufzeichen aus der Rufzeichenliste aus."
         try:
             proc = subprocess.Popen(shlex.split(pdfgrepcall), stdout=subprocess.PIPE, shell=False)
@@ -108,13 +116,11 @@ class DLCalls:
         return q
 
     def freecalls(self):
-        pattern = re.compile(self.acalls)
         # these suffixes are not allowed
         nonsuffix = ["SOS", "XXX", "TTT", "YYY", "DDD", "JJJ", "MAYDAY", "PAN"] + self.nonqgroup()
-        print "Generiere freie Klasse A Rufzeichen."
+        print ("Generiere freie Klasse %s Rufzeichen." % string.upper(args.k) )
         allcalls = []
-        for prefix in ['DB', 'DC', 'DD', 'DF', 'DG', 'DH', 'DJ', 'DK', 'DL', 'DM']:
-        #for prefix in ['DO']:
+        for prefix in self.prefix:
             for number in range(10):
                 for alpha in string.ascii_uppercase:
                     for bravo in string.ascii_uppercase:
@@ -128,15 +134,22 @@ class DLCalls:
                             allcalls.append(call)
         diff = set(allcalls) - set(self.dlcalls)
         f = open(self.outfile, 'w')
+        pattern = re.compile(self.calls)
         for c in sorted(diff):
-            f.write("%s\n" % c)
+            if pattern.match(c):
+                f.write("%s\n" % c)
         f.close()
         print "Freie Rufzeichen liegen in der Datei '%s'." % (self.outfile)
         return
 
 
 if __name__ == "__main__":
-    c = DLCalls()
+    parser = argparse.ArgumentParser(description='Generiere eine Liste mit freien Amateurfunkrufzeichen in Deutschland.')
+    parser.add_argument('-k', type=str, choices=['a', 'e'], required=True, help='Klasse A oder E')
+
+    args = parser.parse_args()
+
+    c = DLCalls(args)
     c.freecalls()
 
 
