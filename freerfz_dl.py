@@ -3,7 +3,7 @@
 
 __author__ = "Lars Weiler DC4LW"
 __license__ = "THE NERD-WARE LICENSE (Revision 1)"
-__version__ = "0.9"
+__version__ = "1.0"
 __maintainer__ = "Lars Weiler"
 __email__ = "dc4lw@darc.de"
 
@@ -41,6 +41,7 @@ class DLCalls:
         self.pdffile = 'Rufzeichenliste_AFU.pdf'
         self.download_Rufzeichenliste()
         self.outfile = 'freecalls_'+args.k+'.txt'
+        self.cachefile = 'dlcalls.cache'
 
         if args.k == 'a':
             self.calls = "D([CDGHJ][0-9]|[BFKLM][1-9])[A-Z]{2,3}"
@@ -51,10 +52,6 @@ class DLCalls:
 
         self.dlcalls = self.generiere_Rufzeichenliste()
 
-
-    def out(self):
-        print self.dlcalls
-        return
 
     def download_Rufzeichenliste(self):
         url = 'http://www.bundesnetzagentur.de/SharedDocs/Downloads/DE/Sachgebiete/Telekommunikation/Unternehmen_Institutionen/Frequenzen/Amateurfunk/Rufzeichenliste/Rufzeichenliste_AFU.pdf?__blob=publicationFile&v=11'
@@ -85,26 +82,35 @@ class DLCalls:
         return
 
     def generiere_Rufzeichenliste(self):
-        pdfgrep = find_executable("pdfgrep")
-        if pdfgrep == None:
-            print "Bitte installiere 'pdfgrep'."
-            sys.exit(1)
-        else:
-            pdfgrepversioncall = pdfgrep + " -V"
-            proc = subprocess.Popen(shlex.split(pdfgrepversioncall), stdout=subprocess.PIPE, shell=False)
-            (out, err) = proc.communicate()
-            pdfgrepversion = re.search(r"^This is pdfgrep version\s*([\d.]+)", out).group(1)
-            if LooseVersion(pdfgrepversion) < LooseVersion("1.4.0"):
-                print "pdfgrep Version %s enthält die benötigten Features nicht. Bitte installiere mindestens Version 1.4.0." % (pdfgrepversion)
+        if os.path.getctime(self.pdffile) > os.path.getctime(self.cachefile):
+            pdfgrep = find_executable("pdfgrep")
+            if pdfgrep == None:
+                print "Bitte installiere 'pdfgrep'."
                 sys.exit(1)
-        pdfgrepcall = pdfgrep +" -o \""+self.calls+"\" "+self.pdffile
-        print "Lese Rufzeichen aus der Rufzeichenliste aus."
-        try:
-            proc = subprocess.Popen(shlex.split(pdfgrepcall), stdout=subprocess.PIPE, shell=False)
-            (out, err) = proc.communicate()
-        except subprocess.CalledProcessError as e:
-            print "Error bei pdfgrep. Beende Programm."
-            print e.output
+            else:
+                pdfgrepversioncall = pdfgrep + " -V"
+                proc = subprocess.Popen(shlex.split(pdfgrepversioncall), stdout=subprocess.PIPE, shell=False)
+                (out, err) = proc.communicate()
+                pdfgrepversion = re.search(r"^This is pdfgrep version\s*([\d.]+)", out).group(1)
+                if LooseVersion(pdfgrepversion) < LooseVersion("1.4.0"):
+                    print "pdfgrep Version %s enthält die benötigten Features nicht. Bitte installiere mindestens Version 1.4.0." % (pdfgrepversion)
+                    sys.exit(1)
+            pdfgrepcall = pdfgrep +" -o \""+self.calls+"\" "+self.pdffile
+            print "Lese Rufzeichen aus der Rufzeichenliste aus."
+            try:
+                proc = subprocess.Popen(shlex.split(pdfgrepcall), stdout=subprocess.PIPE, shell=False)
+                (out, err) = proc.communicate()
+            except subprocess.CalledProcessError as e:
+                print "Error bei pdfgrep. Beende Programm."
+                print e.output
+            f = open(self.cachefile, 'w')
+            f.write(out)
+            f.close()
+        else:
+            print "Cachefile aktuell. Lese Cachefile."
+            with open(self.cachefile) as f:
+                out = f.read()
+            f.close()
         return out.split()
 
     def nonqgroup(self):
