@@ -16,7 +16,7 @@ Die Idee stammt aus der Liste der freien österreichischen Suffixe beim [Metalab
 ### Code
   - ~~Rufzeichenlisten PDF runterladen~~
   - generierte Textliste der vergebenen Rufzeichen zwischenspeichern und nicht jedes Mal neu aus dem PDF generieren
-  - bessere Effizienz durch Listencompare statt Iteration mit Regular Expressions
+  - ~~bessere Effizienz durch Listencompare statt Iteration mit Regular Expressions~~
 
 ### Suche
   - Suche nach nicht vergebenen Rufzeichen
