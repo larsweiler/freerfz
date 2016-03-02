@@ -28,4 +28,8 @@ Die Idee stammt aus der Liste der freien österreichischen Suffixe beim [Metalab
   - Klasse E Rufzeichen: ``/DO[1-9][A-Z]{2,3}/`` 
   - Klubstationen Klasse A (ohne 4-7-stelliges Suffix): ```D([BCDFGHJKMQR][0-9][A-Z]|[AFKL]0[A-Z]{2,3}|A[023][A-Z]|P[3-9][A-Z])```
   - Klubstationen Klasse E: ```D(A[7-9][A-Z]|N0[A-Z]{2,3}|O0[A-Z])```
+  - Ausbildungsrufzeichen Klasse A: ```DN[1-6][A-Z]{2,3}```
+  - Ausbildungsrufzeichen Klasse E: ```DN[7-8][A-Z]{2,3}```
+  - Relaisfunkstellen/Funkbaken Klasse A: ```D[BM]0[A-Z]{2,3}```
+  - Relaisfunkstellen/Funkbaken Klasse E: ```DO0[A-Z]{2,3}```
 

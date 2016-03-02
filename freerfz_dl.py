@@ -57,6 +57,20 @@ class DLCalls:
             elif args.k == 'e':
                 self.calls = "D(A[7-9][A-Z]|N0[A-Z]{2,3}|O0[A-Z])"
                 self.prefix = ['DA','DN','DO']
+        elif args.t == 'r':
+            if args.k == 'a':
+                self.calls = "D[BM]0[A-Z]{2,3}"
+                self.prefix = ['DB','DM']
+            elif args.k == 'e':
+                self.calls = "DO0[A-Z]{2,3}"
+                self.prefix = ['DO']
+        elif args.t == 'a':
+            if args.k == 'a':
+                self.calls = "DN[1-6][A-Z]{2,3}"
+                self.prefix = ['DN']
+            elif args.k == 'e':
+                self.calls = "DN[7-8][A-Z]{2,3}"
+                self.prefix = ['DN']
 
         self.dlcalls = self.generiere_Rufzeichenliste()
 
@@ -161,7 +175,7 @@ class DLCalls:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Generiere eine Liste mit freien Amateurfunkrufzeichen in Deutschland.')
     parser.add_argument('-k', type=str, choices=['a', 'e'], required=True, help='Klasse: (A) oder (E)')
-    parser.add_argument('-t', type=str, choices=['p', 'k'], required=True, help='Typ: (P)ersonenbezogen, (K)lubstation')
+    parser.add_argument('-t', type=str, choices=['p', 'k', 'r', 'a'], required=True, help='Typ: (P)ersonenbezogen, (K)lubstation, (R)elais/Funkbake, (A)usbildungsrufzeichen')
 
     args = parser.parse_args()
 
