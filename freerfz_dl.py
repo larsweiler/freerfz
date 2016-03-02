@@ -3,7 +3,7 @@
 
 __author__ = "Lars Weiler DC4LW"
 __license__ = "THE NERD-WARE LICENSE (Revision 1)"
-__version__ = "1.1"
+__version__ = "1.2"
 __maintainer__ = "Lars Weiler"
 __email__ = "dc4lw@darc.de"
 
