@@ -3,7 +3,7 @@
 
 __author__ = "Lars Weiler DC4LW"
 __license__ = "THE NERD-WARE LICENSE (Revision 1)"
-__version__ = "1.0"
+__version__ = "1.1"
 __maintainer__ = "Lars Weiler"
 __email__ = "dc4lw@darc.de"
 
@@ -40,15 +40,23 @@ class DLCalls:
         # regex for Klasse A calls
         self.pdffile = 'Rufzeichenliste_AFU.pdf'
         self.download_Rufzeichenliste()
-        self.outfile = 'freecalls_'+args.k+'.txt'
-        self.cachefile = 'dlcalls.cache'
+        self.outfile = 'freecalls_'+args.k+'_'+args.t+'.txt'
+        self.cachefile = 'dlcalls_'+args.k+'_'+args.t+'.cache'
 
-        if args.k == 'a':
-            self.calls = "D([CDGHJ][0-9]|[BFKLM][1-9])[A-Z]{2,3}"
-            self.prefix = ['DB', 'DC', 'DD', 'DF', 'DG', 'DH', 'DJ', 'DK', 'DL', 'DM']
-        elif args.k == 'e':
-            self.calls = "DO[1-9][A-Z]{2,3}"
-            self.prefix = ['DO']
+        if args.t == 'p':
+            if args.k == 'a':
+                self.calls = "D([CDGHJ][0-9]|[BFKLM][1-9])[A-Z]{2,3}"
+                self.prefix = ['DB', 'DC', 'DD', 'DF', 'DG', 'DH', 'DJ', 'DK', 'DL', 'DM']
+            elif args.k == 'e':
+                self.calls = "DO[1-9][A-Z]{2,3}"
+                self.prefix = ['DO']
+        elif args.t == 'k':
+            if args.k == 'a':
+                self.calls = "D([BCDFGHJKMQR][0-9][A-Z]|[AFKL]0[A-Z]{2,3}|A[023][A-Z]|P[3-9][A-Z])"
+                self.prefix = ['DA','DB','DC','DD','DF','DG','DH','DJ','DK','DL','DM','DP','DQ','DR']
+            elif args.k == 'e':
+                self.calls = "D(A[7-9][A-Z]|N0[A-Z]{2,3}|O0[A-Z])"
+                self.prefix = ['DA','DN','DO']
 
         self.dlcalls = self.generiere_Rufzeichenliste()
 
@@ -82,7 +90,7 @@ class DLCalls:
         return
 
     def generiere_Rufzeichenliste(self):
-        if os.path.getctime(self.pdffile) > os.path.getctime(self.cachefile):
+        if not os.path.isfile(self.cachefile) or os.path.getctime(self.pdffile) > os.path.getctime(self.cachefile):
             pdfgrep = find_executable("pdfgrep")
             if pdfgrep == None:
                 print "Bitte installiere 'pdfgrep'."
@@ -95,7 +103,7 @@ class DLCalls:
                 if LooseVersion(pdfgrepversion) < LooseVersion("1.4.0"):
                     print "pdfgrep Version %s enthält die benötigten Features nicht. Bitte installiere mindestens Version 1.4.0." % (pdfgrepversion)
                     sys.exit(1)
-            pdfgrepcall = pdfgrep +" -o \""+self.calls+"\" "+self.pdffile
+            pdfgrepcall = pdfgrep +" -o \""+self.calls+","+"\" "+self.pdffile
             print "Lese Rufzeichen aus der Rufzeichenliste aus."
             try:
                 proc = subprocess.Popen(shlex.split(pdfgrepcall), stdout=subprocess.PIPE, shell=False)
@@ -103,6 +111,7 @@ class DLCalls:
             except subprocess.CalledProcessError as e:
                 print "Error bei pdfgrep. Beende Programm."
                 print e.output
+            out = out.replace(",", "")
             f = open(self.cachefile, 'w')
             f.write(out)
             f.close()
@@ -124,7 +133,7 @@ class DLCalls:
     def freecalls(self):
         # these suffixes are not allowed
         nonsuffix = ["SOS", "XXX", "TTT", "YYY", "DDD", "JJJ", "MAYDAY", "PAN"] + self.nonqgroup()
-        print ("Generiere freie Klasse %s Rufzeichen." % string.upper(args.k) )
+        print ("Generiere freie Rufzeichen.")
         allcalls = []
         for prefix in self.prefix:
             for number in range(10):
@@ -151,7 +160,8 @@ class DLCalls:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Generiere eine Liste mit freien Amateurfunkrufzeichen in Deutschland.')
-    parser.add_argument('-k', type=str, choices=['a', 'e'], required=True, help='Klasse A oder E')
+    parser.add_argument('-k', type=str, choices=['a', 'e'], required=True, help='Klasse: (A) oder (E)')
+    parser.add_argument('-t', type=str, choices=['p', 'k'], required=True, help='Typ: (P)ersonenbezogen, (K)lubstation')
 
     args = parser.parse_args()
 

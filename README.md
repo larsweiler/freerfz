@@ -24,28 +24,8 @@ Die Idee stammt aus der Liste der freien österreichischen Suffixe beim [Metalab
 
 ### Regular Expressions für Rufzeichensuchen
 
-Klasse A Rufzeichen: ``/D([CDGHJ][0-9]|[BFKLM][1-9])[A-Z]{2,3}/``
-
-Klasse E Rufzeichen: ``/DO[1-9][A-Z]{2,3}/``
-
-Klubstationen Klasse A (ohne 4-7-stelliges Suffix):
-```
-DA0[A-Z]{2,3}
-DA[0,2,3][A-Z]{1}
-D[B-D][0-9][A-Z]{1}
-DF0[A-Z]{2,3}
-D[F-H][0-9][A-Z]{1}
-D[J-M][0-9][A-Z]{1}
-DK0[A-Z]{2,3}
-DL0[A-Z]{2,3}
-DP[3-9][A-Z]{1}
-D[Q-R][0-9][A-Z]{1}
-```
-
-Klubstationen Klasse E:
-```
-DA[7-9][A-Z]{1}
-DN0[A-Z]{2,3}
-DO0[A-Z]{1}
-```
+  - Klasse A Rufzeichen: ``/D([CDGHJ][0-9]|[BFKLM][1-9])[A-Z]{2,3}/``
+  - Klasse E Rufzeichen: ``/DO[1-9][A-Z]{2,3}/`` 
+  - Klubstationen Klasse A (ohne 4-7-stelliges Suffix): ```D([BCDFGHJKMQR][0-9][A-Z]|[AFKL]0[A-Z]{2,3}|A[023][A-Z]|P[3-9][A-Z])```
+  - Klubstationen Klasse E: ```D(A[7-9][A-Z]|N0[A-Z]{2,3}|O0[A-Z])```
 
