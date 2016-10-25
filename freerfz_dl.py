@@ -32,43 +32,44 @@ import string
 import re
 import urllib2
 import argparse
+import click
 from distutils.spawn import find_executable
 from distutils.version import LooseVersion
 
 class DLCalls:
-    def __init__(self, args):
+    def __init__(self, k, t):
         # regex for Klasse A calls
         self.pdffile = 'Rufzeichenliste_AFU.pdf'
         self.download_Rufzeichenliste()
-        self.outfile = 'freecalls_'+args.k+'_'+args.t+'.txt'
-        self.cachefile = 'dlcalls_'+args.k+'_'+args.t+'.cache'
+        self.outfile = 'freecalls_'+k+'_'+t+'.txt'
+        self.cachefile = 'dlcalls_'+k+'_'+t+'.cache'
 
-        if args.t == 'p':
-            if args.k == 'a':
+        if t == 'p':
+            if k == 'a':
                 self.calls = "D([CDGHJ][0-9]|[BFKLM][1-9])[A-Z]{2,3}"
                 self.prefix = ['DB', 'DC', 'DD', 'DF', 'DG', 'DH', 'DJ', 'DK', 'DL', 'DM']
-            elif args.k == 'e':
+            elif k == 'e':
                 self.calls = "DO[1-9][A-Z]{2,3}"
                 self.prefix = ['DO']
-        elif args.t == 'k':
-            if args.k == 'a':
+        elif t == 'k':
+            if k == 'a':
                 self.calls = "D([BCDFGHJKMQR][0-9][A-Z]|[AFKL]0[A-Z]{2,3}|A[023][A-Z]|P[3-9][A-Z])"
                 self.prefix = ['DA','DB','DC','DD','DF','DG','DH','DJ','DK','DL','DM','DP','DQ','DR']
-            elif args.k == 'e':
+            elif k == 'e':
                 self.calls = "D(A[7-9][A-Z]|N0[A-Z]{2,3}|O0[A-Z])"
                 self.prefix = ['DA','DN','DO']
-        elif args.t == 'r':
-            if args.k == 'a':
+        elif t == 'r':
+            if k == 'a':
                 self.calls = "D[BM]0[A-Z]{2,3}"
                 self.prefix = ['DB','DM']
-            elif args.k == 'e':
+            elif k == 'e':
                 self.calls = "DO0[A-Z]{2,3}"
                 self.prefix = ['DO']
-        elif args.t == 'a':
-            if args.k == 'a':
+        elif t == 'a':
+            if k == 'a':
                 self.calls = "DN[1-6][A-Z]{2,3}"
                 self.prefix = ['DN']
-            elif args.k == 'e':
+            elif k == 'e':
                 self.calls = "DN[7-8][A-Z]{2,3}"
                 self.prefix = ['DN']
 
@@ -171,15 +172,21 @@ class DLCalls:
         print "Freie Rufzeichen liegen in der Datei '%s'." % (self.outfile)
         return
 
+@click.command()
+@click.option('-k', type=click.Choice(['a', 'e']), help="Klasse: (A) oder (E)")
+@click.option('-t', type=click.Choice(['p', 'k', 'r', 'a']), help="Typ: (P)ersonenbezogen, (K)lubstation, (R)elais/Funkbake, (A)usbildungsrufzeichen")
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Generiere eine Liste mit freien Amateurfunkrufzeichen in Deutschland.')
-    parser.add_argument('-k', type=str, choices=['a', 'e'], required=True, help='Klasse: (A) oder (E)')
-    parser.add_argument('-t', type=str, choices=['p', 'k', 'r', 'a'], required=True, help='Typ: (P)ersonenbezogen, (K)lubstation, (R)elais/Funkbake, (A)usbildungsrufzeichen')
+def freerfz(k, t):
+    """Auflistung von freien Rufzeichen
 
-    args = parser.parse_args()
-
-    c = DLCalls(args)
+    Es wird das Verzeichnis der vergebenen Rufzeichen runter geladen. Danach
+    wird eine Datei von freien Rufzeichen in der angebenen Klasse und des Typs
+    angelegt.
+    """
+    click.echo('k: %s, t: %s' % (k,t))
+    c = DLCalls(k, t)
     c.freecalls()
 
+if __name__ == "__main__":
+    freerfz()
 
