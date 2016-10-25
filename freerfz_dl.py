@@ -3,7 +3,7 @@
 
 __author__ = "Lars Weiler DC4LW"
 __license__ = "THE NERD-WARE LICENSE (Revision 1)"
-__version__ = "1.2"
+__version__ = "1.5"
 __maintainer__ = "Lars Weiler"
 __email__ = "dc4lw@darc.de"
 
@@ -183,7 +183,7 @@ def freerfz(k, t):
     wird eine Datei von freien Rufzeichen in der angebenen Klasse und des Typs
     angelegt.
     """
-    click.echo('k: %s, t: %s' % (k,t))
+    click.echo('Ausgewählte Klasse: %s\nAusgewählter Typ: %s' % (k,t))
     c = DLCalls(k, t)
     c.freecalls()
 
