@@ -92,14 +92,14 @@ class DLCalls:
             dl = True
 
         if dl:
-            print "Lade neues PDF runter."
+            print("Lade neues PDF runter.")
             try:
                 with open(self.pdffile, 'wb') as f:
                     f.write(r.read())
             except:
-                print "Download Error"
+                print("Download Error")
         else:
-            print "Rufzeichenliste braucht nicht erneut runter geladen zu werden."
+            print("Rufzeichenliste braucht nicht erneut runter geladen zu werden.")
         r.close()
         return
 
@@ -107,7 +107,7 @@ class DLCalls:
         if not os.path.isfile(self.cachefile) or os.path.getctime(self.pdffile) > os.path.getctime(self.cachefile):
             pdfgrep = find_executable("pdfgrep")
             if pdfgrep == None:
-                print "Bitte installiere 'pdfgrep'."
+                print("Bitte installiere 'pdfgrep'.")
                 sys.exit(1)
             else:
                 pdfgrepversioncall = pdfgrep + " -V"
@@ -115,22 +115,22 @@ class DLCalls:
                 (out, err) = proc.communicate()
                 pdfgrepversion = re.search(r"^This is pdfgrep version\s*([\d.]+)", out).group(1)
                 if LooseVersion(pdfgrepversion) < LooseVersion("1.4.0"):
-                    print "pdfgrep Version %s enthält die benötigten Features nicht. Bitte installiere mindestens Version 1.4.0." % (pdfgrepversion)
+                    print("pdfgrep Version %s enthält die benötigten Features nicht. Bitte installiere mindestens Version 1.4.0." % (pdfgrepversion))
                     sys.exit(1)
             pdfgrepcall = pdfgrep +" -o \""+self.calls+","+"\" "+self.pdffile
-            print "Lese Rufzeichen aus der Rufzeichenliste aus."
+            print("Lese Rufzeichen aus der Rufzeichenliste aus.")
             try:
                 proc = subprocess.Popen(shlex.split(pdfgrepcall), stdout=subprocess.PIPE, shell=False)
                 (out, err) = proc.communicate()
             except subprocess.CalledProcessError as e:
-                print "Error bei pdfgrep. Beende Programm."
-                print e.output
+                print("Error bei pdfgrep. Beende Programm.")
+                print(e.output)
             out = out.replace(",", "")
             f = open(self.cachefile, 'w')
             f.write(out)
             f.close()
         else:
-            print "Cachefile aktuell. Lese Cachefile."
+            print("Cachefile aktuell. Lese Cachefile.")
             with open(self.cachefile) as f:
                 out = f.read()
             f.close()
@@ -147,7 +147,7 @@ class DLCalls:
     def freecalls(self):
         # these suffixes are not allowed
         nonsuffix = ["SOS", "XXX", "TTT", "YYY", "DDD", "JJJ", "MAYDAY", "PAN"] + self.nonqgroup()
-        print ("Generiere freie Rufzeichen.")
+        print("Generiere freie Rufzeichen.")
         allcalls = []
         for prefix in self.prefix:
             for number in range(10):
@@ -168,7 +168,7 @@ class DLCalls:
             if pattern.match(c):
                 f.write("%s\n" % c)
         f.close()
-        print "Freie Rufzeichen liegen in der Datei '%s'." % (self.outfile)
+        print("Freie Rufzeichen liegen in der Datei '%s'." % (self.outfile))
         return
 
 
