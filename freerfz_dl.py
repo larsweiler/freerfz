@@ -113,6 +113,7 @@ class DLCalls:
                 pdfgrepversioncall = pdfgrep + " -V"
                 proc = subprocess.Popen(shlex.split(pdfgrepversioncall), stdout=subprocess.PIPE, shell=False)
                 (out, err) = proc.communicate()
+                out = out.decode("utf-8")
                 pdfgrepversion = re.search(r"^This is pdfgrep version\s*([\d.]+)", out).group(1)
                 pdfgrepversion = pdfgrepversion[:-1] #remove last dot
                 if version.parse(pdfgrepversion) < version.parse("1.4.0"):
@@ -126,6 +127,7 @@ class DLCalls:
             except subprocess.CalledProcessError as e:
                 print("Error bei pdfgrep. Beende Programm.")
                 print(e.output)
+            out = out.decode("utf-8")
             out = out.replace(",", "")
             f = open(self.cachefile, 'w')
             f.write(out)
