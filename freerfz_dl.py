@@ -32,8 +32,8 @@ import string
 import re
 import urllib2
 import argparse
-from distutils.spawn import find_executable
 from distutils.version import LooseVersion
+import shutil
 
 class DLCalls:
     def __init__(self, args):
@@ -105,7 +105,7 @@ class DLCalls:
 
     def generiere_Rufzeichenliste(self):
         if not os.path.isfile(self.cachefile) or os.path.getctime(self.pdffile) > os.path.getctime(self.cachefile):
-            pdfgrep = find_executable("pdfgrep")
+            pdfgrep = shutil.which("pdfgrep")
             if pdfgrep == None:
                 print("Bitte installiere 'pdfgrep'.")
                 sys.exit(1)
