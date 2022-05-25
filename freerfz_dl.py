@@ -142,7 +142,7 @@ class DLCalls:
     def nonqgroup(self):
         q = []
         # no Q-Groups from QOA-QUZ allowed as suffix
-        for a in string.uppercase[14:21]:
+        for a in string.ascii_uppercase[14:21]:
             for b in string.ascii_uppercase:
                 q.append("Q"+a+b)
         return q
