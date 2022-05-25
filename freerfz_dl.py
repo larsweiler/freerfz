@@ -30,7 +30,7 @@ import subprocess
 import shlex
 import string
 import re
-import urllib2
+import urllib.request as ur
 import argparse
 import shutil
 from packaging import version
@@ -79,7 +79,7 @@ class DLCalls:
         url = 'http://www.bundesnetzagentur.de/SharedDocs/Downloads/DE/Sachgebiete/Telekommunikation/Unternehmen_Institutionen/Frequenzen/Amateurfunk/Rufzeichenliste/Rufzeichenliste_AFU.pdf?__blob=publicationFile&v=11'
         dl = False
 
-        r = urllib2.urlopen(url)
+        r = ur.urlopen(url)
         downloadlength = r.headers['content-length']
 
         try:
