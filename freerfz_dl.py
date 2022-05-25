@@ -32,8 +32,8 @@ import string
 import re
 import urllib2
 import argparse
-from distutils.version import LooseVersion
 import shutil
+from packaging import version
 
 class DLCalls:
     def __init__(self, args):
@@ -114,7 +114,8 @@ class DLCalls:
                 proc = subprocess.Popen(shlex.split(pdfgrepversioncall), stdout=subprocess.PIPE, shell=False)
                 (out, err) = proc.communicate()
                 pdfgrepversion = re.search(r"^This is pdfgrep version\s*([\d.]+)", out).group(1)
-                if LooseVersion(pdfgrepversion) < LooseVersion("1.4.0"):
+                pdfgrepversion = pdfgrepversion[:-1] #remove last dot
+                if version.parse(pdfgrepversion) < version.parse("1.4.0"):
                     print("pdfgrep Version %s enthält die benötigten Features nicht. Bitte installiere mindestens Version 1.4.0." % (pdfgrepversion))
                     sys.exit(1)
             pdfgrepcall = pdfgrep +" -o \""+self.calls+","+"\" "+self.pdffile
