@@ -45,18 +45,24 @@ class DLCalls:
 
         if args.t == 'p':
             if args.k == 'a':
-                self.calls = "D([CDGHJ][0-9]|[BFKLM][1-9])[A-Z]{2,3}"
-                self.prefix = ['DB', 'DC', 'DD', 'DF', 'DG', 'DH', 'DJ', 'DK', 'DL', 'DM']
+                self.calls = "D(A[1-2]|[CDGHJ][0-9]|[BFKLM][1-9])[A-Z]{2,3}"
+                self.prefix = ['DA','DB', 'DC', 'DD', 'DF', 'DG', 'DH', 'DJ', 'DK', 'DL', 'DM']
             elif args.k == 'e':
-                self.calls = "DO[1-9][A-Z]{2,3}"
-                self.prefix = ['DO']
+                self.calls = "D(O[1-9]|A6)[A-Z]{2,3}"
+                self.prefix = ['DA', 'DO']
+            elif args.k == 'n':
+                self.calls = "DN9[A-Z]{2,3}"
+                self.prefix = ['DN']
         elif args.t == 'k':
             if args.k == 'a':
-                self.calls = "D([BCDFGHJKMQR][0-9][A-Z]|[AFKL]0[A-Z]{2,3}|A[023][A-Z]|P[3-9][A-Z])"
+                self.calls = "D([BCDFGHJKM][0-9][A-Z]|[AFKL]0[A-Z]{2,3}|A[023][A-Z]|P[3-9][A-Z]|[QR][0-9][A-Z])"
                 self.prefix = ['DA','DB','DC','DD','DF','DG','DH','DJ','DK','DL','DM','DP','DQ','DR']
             elif args.k == 'e':
                 self.calls = "D(A[7-9][A-Z]|N0[A-Z]{2,3}|O0[A-Z])"
                 self.prefix = ['DA','DN','DO']
+            elif args.k == 'n':
+                self.calls = "D(A|P)8[A-Z]{1,3}"
+                self.prefix = ['DA','DP',]
         elif args.t == 'r':
             if args.k == 'a':
                 self.calls = "D[BM]0[A-Z]{2,3}"
@@ -64,6 +70,9 @@ class DLCalls:
             elif args.k == 'e':
                 self.calls = "DO0[A-Z]{2,3}"
                 self.prefix = ['DO']
+            elif args.k == 'n':
+                print("Mit Klasse N dürfen keine Relaisfunkstellen betrieben werden.")
+                exit(1) 
         elif args.t == 'a':
             if args.k == 'a':
                 self.calls = "DN[1-6][A-Z]{2,3}"
@@ -71,6 +80,30 @@ class DLCalls:
             elif args.k == 'e':
                 self.calls = "DN[7-8][A-Z]{2,3}"
                 self.prefix = ['DN']
+            elif args.k == 'n':
+                print("Es gibt keine Ausbildungsrufzeichen der Klasse N.")
+                exit(1)
+        elif args.t == 'b':
+            if args.k == 'a':
+                self.calls = "DR1[A-Z]{2,3}"
+                self.prefix = ['DR']
+            elif args.k == 'e':
+                self.calls = "DR2[A-Z]{2,3}"
+                self.prefix = ['DR']
+            elif args.k == 'n':
+                self.calls = "DR3[A-Z]{2,3}"
+                self.prefix = ['DR']
+        elif args.t == 'n':
+            if args.k == 'a':
+                self.calls = "DR4[A-Z]{2,3}"
+                self.prefix = ['DR']
+            elif args.k == 'e':
+                self.calls = "DR5[A-Z]{2,3}"
+                self.prefix = ['DR']
+            elif args.k == 'n':
+                self.calls = "DR6[A-Z]{2,3}"
+                self.prefix = ['DR']
+
 
         self.dlcalls = self.generiere_Rufzeichenliste()
 
@@ -177,12 +210,10 @@ class DLCalls:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Generiere eine Liste mit freien Amateurfunkrufzeichen in Deutschland.')
-    parser.add_argument('-k', type=str, choices=['a', 'e'], required=True, help='Klasse: (A) oder (E)')
-    parser.add_argument('-t', type=str, choices=['p', 'k', 'r', 'a'], required=True, help='Typ: (P)ersonenbezogen, (K)lubstation, (R)elais/Funkbake, (A)usbildungsrufzeichen')
+    parser.add_argument('-k', type=str, choices=['a', 'e', 'n'], required=True, help='Klasse: (A) oder (E)')
+    parser.add_argument('-t', type=str, choices=['p', 'k', 'r', 'a','b','n'], required=True, help='Typ: (P)ersonenbezogen, (K)lubstation ohne BOS und Notfunk, (R)elais/Funkbake, (A)usbildungsrufzeichen, (B)OS-Klubstationen, Klubstationen für (N)otfunkgruppen privatrechtlicher Organisationen')
 
     args = parser.parse_args()
 
     c = DLCalls(args)
     c.freecalls()
-
-
