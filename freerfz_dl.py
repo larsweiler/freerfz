@@ -3,7 +3,7 @@
 
 __author__ = "Lars Weiler DC4LW"
 __license__ = "THE NERD-WARE LICENSE (Revision 1)"
-__version__ = "1.2"
+__version__ = "1.3"
 __maintainer__ = "Lars Weiler"
 __email__ = "dc4lw@darc.de"
 
@@ -24,16 +24,18 @@ ihrer Inhaber (Rufzeichenliste)
 https://data.bundesnetzagentur.de/Bundesnetzagentur/SharedDocs/Downloads/DE/Sachgebiete/Telekommunikation/Unternehmen_Institutionen/Frequenzen/Amateurfunk/Rufzeichenliste/rufzeichenliste_afu.pdf
 '''
 
-import os
-import sys
-import subprocess
-import shlex
-import string
-import re
-import urllib.request as ur
 import argparse
+import os
+import re
+import shlex
 import shutil
+import string
+import subprocess
+import sys
+import urllib.request as ur
+
 from packaging import version
+
 
 class DLCalls:
     def __init__(self, args):
@@ -72,7 +74,7 @@ class DLCalls:
                 self.prefix = ['DO']
             elif args.k == 'n':
                 print("Mit Klasse N dürfen keine Relaisfunkstellen betrieben werden.")
-                exit(1) 
+                exit(1)
         elif args.t == 'a':
             if args.k == 'a':
                 self.calls = "DN[1-6][A-Z]{2,3}"
